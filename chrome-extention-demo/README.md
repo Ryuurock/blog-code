@@ -26,9 +26,9 @@ chrome插件最重要的是一个叫`manifest.json`的文件，文件描述了�
 监听来自扩展的事件，只需要一处就够了，扩展通过带过来的数据来告知模块需要发布或处理怎样的数据，所以定义的页面端的模块传入数据是这样的
 ```json
 {
-  event: '',
-  platform: '',
-  data: {}
+  "event": "event",
+  "platform": "",
+  "data": {}
 }
 ```
 所以我在事件监听处是这么写的
@@ -58,9 +58,9 @@ document.body.addEventListener( 'extensionBrowerEvent', function( { detail } ) {
 这些事件中，有些需要模块来处理，有些需要模块调用者来处理，所以在上面的`if`逻辑里，就是用扩展通知的数据去匹配定义在对象里的函数进行处理，处理后再由函数决定是否发布此事件，若没有匹配到，则直接在此发布事件，说明此事件应由模块调用者自己处理。举个例子，扩展发出的数据是这样的
 ```json
 {
-  event: 'scanCode',
-  platform: 'wechat',
-  data: undefined
+  "event": "scanCode",
+  "platform": "wechat",
+  "data": null
 }
 ```
 于是我们在平台为`wechat`的模块里定义了它的处理函数
@@ -152,7 +152,8 @@ chrome.tabs.executeScript( tabId, {
 
 我们如何知道页面进入了哪个地址下，然后需要做什么事呢，每个页面肯定有一个单独的url，在我们插入iframe时再绑定一个`onload`事件，每次在回调里注入我们的代码，代码立即会执行，再用`location.pathname`取得当前页面的pathname，以此名称作为函数名称来执行要做的事情（当然肯定要组织一个对象来存放映射的函数），比如通知我们的页面进入首页了，接下来需要输入密码登录。当然，可能并不是所有的网站每个页面都有个独立的pathname，比如微信后台某些页面带了查询参数来区分页面，那我们将参数取出再匹配一次，之前的pathname就不声明为函数，而声明为对象，将查询参数再匹配一次获得最终的结果。
 
-当然为了掌握别人的页面，我们肯定也要掌握每一个网络请求，chrome扩展本身提供了对网络请求的拦截，但不幸的是没有把响应消息体给我们，所以只能采取极端手段了，将代码真正的注入到dom里来改变原生`XmlHttpRequest`对象的行为，当然，这个权限也是要在`manifest.json`里面事先声明的。
+当然为了掌握别人的页面，我们肯定也要掌握每一个网络请求，chrome扩展本身提供了对网络请求的拦截，但不幸的是没有把响应消息体给我们，所以只能采取极端手段了，将代码真正的注入到dom里来改变原生`XmlHttpRequest`对象的行为，当然，这个权限也是要在`manifest.
+`里面事先声明的。
 ```js
 XMLHttpRequest.prototype.open = ( function( original_function ) {
   return function( method, url, async ) {
