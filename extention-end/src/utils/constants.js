@@ -1,0 +1,1 @@
+export const dataMiddleDomId = 'bigwe-input-hidden';

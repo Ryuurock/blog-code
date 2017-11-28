@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "微知助手",
+  "version": "1.1",
+  "icons": {
+    "16": "icons/bigwe-logo.png",
+    "48": "icons/bigwe-logo.png",
+    "128": "icons/bigwe-logo.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "icons/bigwe-logo.png",
+      "38": "icons/bigwe-logo.png"
+    },
+    "default_title": "微知助手"
+  },
+  "background": {
+    "scripts": [ "build/background.js" ],
+    "persistent": true
+  },
+  "content_scripts": [ {
+    "matches": [ "http://localhost:8088/*" ],
+    "js": [ "build/contentScript.js" ]
+  } ],
+  "permissions": [
+    "tabs",
+    "*://*/*",
+    "webRequest",
+    "webRequestBlocking"
+  ],
+  "web_accessible_resources": [ "build/xhr.js" ]
+}
